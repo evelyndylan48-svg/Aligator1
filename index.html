@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>US Phone Number Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>US Phone Number Generator</h1>
+    <label>Area Code:
+        <input type="text" id="areaCode" maxlength="3" value="806" />
+    </label>
+    <label>Prefix (optional, e.g. 204):
+        <input type="text" id="prefix" maxlength="3" />
+    </label>
+    <label>How many numbers (max 10,000):
+        <input type="number" id="limit" min="1" max="10000" value="100" />
+    </label>
+    <br>
+    <button onclick="runGenerator()">Generate</button>
+    <button id="csvBtn" style="display:none;">Download CSV</button>
+    <button id="vcfBtn" style="display:none;">Download vCard</button>
+    <div id="output"></div>
+</div>
+<script src="script.js"></script>
+<script>
+let generatedNumbers = [];
+function runGenerator() {
+    const areaCode = document.getElementById("areaCode").value;
+    const prefix = document.getElementById("prefix").value;
+    const limit = parseInt(document.getElementById("limit").value, 10);
+
+    if (!areaCode.match(/^\d{3}$/)) {
+        alert("Enter a valid 3-digit area code.");
+        return;
+    }
+    if (prefix && !prefix.match(/^[2-9]\d{2}$/)) {
+        alert("Prefix must be 3 digits, first 2-9.");
+        return;
+    }
+    if (isNaN(limit) || limit < 1 || limit > 10000) {
+        alert("Enter number between 1 and 10,000.");
+        return;
+    }
+    generatedNumbers = generateNumbers(areaCode, prefix, limit);
+    document.getElementById("output").textContent = generatedNumbers.join("\n");
+    document.getElementById("csvBtn").style.display = "inline-block";
+    document.getElementById("vcfBtn").style.display = "inline-block";
+}
+document.getElementById("csvBtn").onclick = function() { downloadCSV(generatedNumbers); }
+document.getElementById("vcfBtn").onclick = function() { downloadVCard(generatedNumbers); }
+</script>
+</body>
+</html>
